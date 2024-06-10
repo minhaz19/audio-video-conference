@@ -9,11 +9,22 @@ import {
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { checkPermissions } from './fn/funtion';
+import { PERMISSIONS } from 'react-native-permissions';
 
 const Home = () => {
   const navigation = useNavigation();
-  const handleJoinPress = () => {
-    navigation.navigate('Room');
+  const handleJoinPress = async () => {
+    const permissionsGranted = await checkPermissions([
+      PERMISSIONS.ANDROID.CAMERA,
+      PERMISSIONS.ANDROID.RECORD_AUDIO
+    ]);
+    if (permissionsGranted) {
+      navigation.navigate('Room');
+    } else {
+      console.log('Permission Not Granted!');
+    }
+
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#EFF7FF' }}>

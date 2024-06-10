@@ -1,4 +1,4 @@
-import {Platform} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {
   HMSAudioTrackSettings,
@@ -25,7 +25,7 @@ import {
 import {RouteProp} from '@react-navigation/native';
 
 const AUTH_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoyLCJ0eXBlIjoiYXBwIiwiYXBwX2RhdGEiOm51bGwsImFjY2Vzc19rZXkiOiI2NjYxNTJlNWMxZDY3OTc5YzUzMWQ3YzUiLCJyb2xlIjoic3BlYWtlciIsInJvb21faWQiOiI2NjYxNTJmNzUzODY1MjM3OWU5NmI4MjIiLCJ1c2VyX2lkIjoiY2JkYTYzMjMtZWMxNy00MDA3LWJhMzgtYjJmOWNhMGJmY2JhIiwiZXhwIjoxNzE3NzQ2OTI5LCJqdGkiOiJjMTkxNjM4MC1iYjExLTQ1NTAtOTM5Yi0zNDM5NWQ1ZDQ3ODMiLCJpYXQiOjE3MTc2NjA1MjksImlzcyI6IjY2NjE1MmU1YzFkNjc5NzljNTMxZDdjMyIsIm5iZiI6MTcxNzY2MDUyOSwic3ViIjoiYXBpIn0.YccORqB8FNxAZUCwGV2d_bJsl0QKYaBDl2-toxfVuqM'; // PASTE AUTH TOKEN FROM DASHBOARD HERE
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoyLCJ0eXBlIjoiYXBwIiwiYXBwX2RhdGEiOm51bGwsImFjY2Vzc19rZXkiOiI2NjYxNTJlNWMxZDY3OTc5YzUzMWQ3YzUiLCJyb2xlIjoic3BlYWtlciIsInJvb21faWQiOiI2NjYxNTJmNzUzODY1MjM3OWU5NmI4MjIiLCJ1c2VyX2lkIjoiMDJhZGViZmMtMzAwOS00MmVhLThhZDMtNjdlZjE5N2RkOTAwIiwiZXhwIjoxNzE3OTk4MjY5LCJqdGkiOiJkODBhY2JjZi1mYjExLTRjZTYtYTI5OS01ZmJiOGNlMDU1NDciLCJpYXQiOjE3MTc5MTE4NjksImlzcyI6IjY2NjE1MmU1YzFkNjc5NzljNTMxZDdjMyIsIm5iZiI6MTcxNzkxMTg2OSwic3ViIjoiYXBpIn0.EHdMIfDLYUTllFCGfU1lqlCU9o012GnTbOTR1pBWZ3I';
 
 const USERNAME = 'Minhaz';
 
@@ -48,11 +48,16 @@ export const usePeerTrackNodes = (navigation: {
   });
 
   const handleRoomLeave = async () => {
-    const hmsInstance = hmsInstanceRef.current;
-    await hmsInstance.leave();
-    // Removing HMSSDK instance
-    hmsInstanceRef.current = null;
-    navigation.navigate('Home');
+    try {
+      const hmsInstance = hmsInstanceRef.current;
+      hmsInstance.removeAllListeners();
+      await hmsInstance.leave();
+      // Removing HMSSDK instance
+      hmsInstanceRef.current = null;
+      navigation.navigate('Home');
+    } catch (error) {
+      console.log('Leave Error: ', error);
+    }
   };
   const getTrackSettings = () => {
     let audioSettings = new HMSAudioTrackSettings({
@@ -197,9 +202,7 @@ export const usePeerTrackNodes = (navigation: {
   const onJoinRoom = () => {
     if (hmsConfig) {
       const hmsInstance = hmsInstanceRef.current;
-      hmsInstance?.join(
-        new HMSConfig({authToken: AUTH_TOKEN, username: USERNAME}),
-      );
+      hmsInstance?.join(hmsConfig);
     } else {
       setJoinButtonLoading(false);
       setLoading(false);
@@ -209,40 +212,48 @@ export const usePeerTrackNodes = (navigation: {
   // Effect to handle HMSSDK initialization and Listeners Setup
   useEffect(() => {
     const joinRoom = async () => {
-      // setLoading(true);
+      try {
+        // setLoading(true);
 
-      const trackSettings = getTrackSettings();
-      const hmsInstance = await HMSSDK.build({trackSettings});
+        const trackSettings = getTrackSettings();
 
-      // Saving `hmsInstance` in ref
-      hmsInstanceRef.current = hmsInstance;
+        const hmsInstance = await HMSSDK.build({trackSettings});
 
-      hmsInstance?.addEventListener(
-        HMSUpdateListenerActions.ON_PREVIEW,
-        onPreviewSuccess.bind(this, hmsInstance, hmsConfig),
-      );
-      hmsInstance.addEventListener(
-        HMSUpdateListenerActions.ON_JOIN,
-        onJoinSuccess,
-      );
+        // Saving `hmsInstance` in ref
+        hmsInstanceRef.current = hmsInstance;
 
-      hmsInstance.addEventListener(
-        HMSUpdateListenerActions.ON_PEER_UPDATE,
-        onPeerListener,
-      );
+        hmsInstance?.addEventListener(
+          HMSUpdateListenerActions.ON_PREVIEW,
+          onPreviewSuccess.bind(this, hmsInstance, hmsConfig),
+        );
+        hmsInstance.addEventListener(
+          HMSUpdateListenerActions.ON_JOIN,
+          onJoinSuccess,
+        );
 
-      hmsInstance.addEventListener(
-        HMSUpdateListenerActions.ON_TRACK_UPDATE,
-        onTrackListener,
-      );
+        hmsInstance.addEventListener(
+          HMSUpdateListenerActions.ON_PEER_UPDATE,
+          onPeerListener,
+        );
 
-      hmsInstance.addEventListener(
-        HMSUpdateListenerActions.ON_ERROR,
-        onErrorListener,
-      );
+        hmsInstance.addEventListener(
+          HMSUpdateListenerActions.ON_TRACK_UPDATE,
+          onTrackListener,
+        );
 
-      // hmsInstance.join(new HMSConfig({authToken: token, username: userName}));
-      hmsInstance.preview(hmsConfig);
+        hmsInstance.addEventListener(
+          HMSUpdateListenerActions.ON_ERROR,
+          onErrorListener,
+        );
+
+        // hmsInstance.join(
+        //   new HMSConfig({authToken: AUTH_TOKEN, username: USERNAME}),
+        // );
+        hmsInstance.preview(hmsConfig);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Check your console to see error logs!');
+      }
     };
 
     joinRoom();

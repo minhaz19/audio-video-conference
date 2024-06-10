@@ -8,11 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import {HMSLocalPeer} from '@100mslive/react-native-hms';
-import {usePeerTrackNodes} from './fn/funtion';
-import {PreviewModal} from './Preview';
+import { HMSLocalPeer } from '@100mslive/react-native-hms';
+import { usePeerTrackNodes } from './fn/funtion';
+import { PreviewModal } from './Preview';
 import Text_Size from './constants/textScaling';
 import Colors from './constants/Colors';
 import Peer from './Peer';
@@ -23,7 +23,7 @@ interface Props {
     navigate: (arg: string) => void;
   };
 }
-const Room = ({navigation}: Props) => {
+const Room = ({ navigation }: Props) => {
   const [localPeer, setLocalPeer] = useState<HMSLocalPeer>();
   const [isAudioMute, setIsAudioMute] = useState<boolean | undefined>(
     localPeer?.audioTrack?.isMute(),
@@ -47,7 +47,7 @@ const Room = ({navigation}: Props) => {
   } = usePeerTrackNodes(navigation);
 
   const HmsView = hmsInstanceRef.current?.HmsView;
-  const _keyExtractor = (item: {id: any}) => item.id;
+  const _keyExtractor = (item: { id: any }) => item.id;
   const hmsInstance = hmsInstanceRef.current;
 
   const audioAllowed = localPeer?.audioTrack?.type;
@@ -76,7 +76,9 @@ const Room = ({navigation}: Props) => {
     }
   }, [hmsInstance]);
 
-  console.log(modalType);
+  // console.log({modalType});
+  // console.log({ previewTracks });
+  // console.log({loading})
 
   return (
     <>
@@ -98,10 +100,10 @@ const Room = ({navigation}: Props) => {
               isVideoMute={isVideoMute}
             />
           ) : (
-            <SafeAreaView style={{flex: 1, backgroundColor: Colors.headerText}}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.headerText }}>
               {/* <View > */}
               <BigText
-                text={'Woofmeets Conference'}
+                text={'HE Conference'}
                 textStyle={{
                   fontSize: Text_Size.Text_3,
                   color: Colors.light.background,
@@ -141,7 +143,7 @@ const Room = ({navigation}: Props) => {
                       ]}>
                       <Feather
                         name={isVideoMute ? 'video-off' : 'video'}
-                        style={{color: Colors.light.background}}
+                        style={{ color: Colors.light.background }}
                         size={20}
                       />
                     </TouchableOpacity>
@@ -162,7 +164,7 @@ const Room = ({navigation}: Props) => {
                       ]}>
                       <Feather
                         name={isAudioMute ? 'mic-off' : 'mic'}
-                        style={{color: Colors.light.background}}
+                        style={{ color: Colors.light.background }}
                         size={20}
                       />
                     </TouchableOpacity>
@@ -171,11 +173,11 @@ const Room = ({navigation}: Props) => {
                     onPress={handleRoomEnd}
                     style={[
                       styles.iconContainer,
-                      {backgroundColor: Colors.washedRed},
+                      { backgroundColor: Colors.washedRed },
                     ]}>
                     <Feather
                       name={'phone'}
-                      style={{color: Colors.light.background}}
+                      style={{ color: Colors.light.background }}
                       size={20}
                     />
                   </TouchableOpacity>

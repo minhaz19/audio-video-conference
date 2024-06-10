@@ -126,50 +126,50 @@ export const PreviewModal = ({
       <View style={[styles.buttonRow, { bottom: 24 + bottom, left, right }]}>
         <View style={styles.iconContainer}>
           <View style={styles.iconSubContainer}>
-            {audioAllowed && (
-              <CustomButton
-                onPress={() => {
-                  setIsAudioMute(!isAudioMute);
-                  previewPeer?.localAudioTrack()?.setMute(!isAudioMute);
-                }}
-                viewStyle={[
-                  styles.singleIconContainer,
-                  isAudioMute && styles.mute,
-                ]}
-                LeftIcon={
-                  <Feather
-                    name={isAudioMute ? 'mic-off' : 'mic'}
-                    style={[
-                      styles.videoIcon,
-                      isAudioMute && styles.muteVideoIcon,
-                    ]}
-                    size={32}
-                  />
-                }
-              />
-            )}
-            {videoAllowed && (
-              <CustomButton
-                onPress={() => {
-                  setIsVideoMute(!isVideoMute);
-                  previewPeer?.localVideoTrack()?.setMute(!isVideoMute);
-                }}
-                viewStyle={[
-                  styles.singleIconContainer,
-                  isVideoMute && styles.mute,
-                ]}
-                LeftIcon={
-                  <Feather
-                    name={isVideoMute ? 'video-off' : 'video'}
-                    style={[
-                      styles.videoIcon,
-                      isVideoMute && styles.muteVideoIcon,
-                    ]}
-                    size={32}
-                  />
-                }
-              />
-            )}
+            {/* {audioAllowed && ( */}
+            <CustomButton
+              onPress={() => {
+                setIsAudioMute(!isAudioMute);
+                previewPeer?.localAudioTrack()?.setMute(!isAudioMute);
+              }}
+              viewStyle={[
+                styles.singleIconContainer,
+                isAudioMute && styles.mute,
+              ]}
+              LeftIcon={
+                <Feather
+                  name={isAudioMute ? 'mic-off' : 'mic'}
+                  style={[
+                    styles.videoIcon,
+                    isAudioMute && styles.muteVideoIcon,
+                  ]}
+                  size={32}
+                />
+              }
+            />
+            {/* )} */}
+            {/* {videoAllowed && ( */}
+            <CustomButton
+              onPress={() => {
+                setIsVideoMute(!isVideoMute);
+                previewPeer?.localVideoTrack()?.setMute(!isVideoMute);
+              }}
+              viewStyle={[
+                styles.singleIconContainer,
+                isVideoMute && styles.mute,
+              ]}
+              LeftIcon={
+                <Feather
+                  name={isVideoMute ? 'video-off' : 'video'}
+                  style={[
+                    styles.videoIcon,
+                    isVideoMute && styles.muteVideoIcon,
+                  ]}
+                  size={32}
+                />
+              }
+            />
+            {/* )} */}
           </View>
           <View style={styles.iconSubContainer}>
             {previewPeer && (

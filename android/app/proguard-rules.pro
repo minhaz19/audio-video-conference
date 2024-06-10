@@ -8,3 +8,12 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+# Suppress warnings for java.lang.invoke.StringConcatFactory
+
+ -dontwarn java.lang.invoke.StringConcatFactory
+
+
+
+
+
+
